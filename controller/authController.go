@@ -53,7 +53,7 @@ func Register(c *fiber.Ctx) error {
 		FirstName: data["first_name"].(string),
 		LastName:  data["last_name"].(string),
 		Phone:     data["phone"].(string),
-		Username:  data["username"].(string),
+		// Username:  data["username"].(string),
 		Email:     strings.TrimSpace(data["email"].(string)),
 	}
 	user.SetPassword(data["password"].(string))
