@@ -11,11 +11,17 @@ func main() {
 	app := fiber.New()
 
 	// ✅ Enable CORS so frontend (3001) can talk to backend (3000)
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins:     "http://localhost:3001",
+	// 	AllowCredentials: true,
+	// }))
+
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3001",
+		AllowOrigins:     "http://localhost:3001, https://blog-website-akhi.netlify.app",
+		AllowMethods:     "GET,POST,PUT,DELETE",
+		AllowHeaders:     "Origin, Content-Type, Accept",
 		AllowCredentials: true,
 	}))
-
 	// connect database
 	database.Connect()
 

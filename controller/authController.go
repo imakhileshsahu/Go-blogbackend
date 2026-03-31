@@ -25,14 +25,27 @@ func Register(c *fiber.Ctx) error {
 	if err := c.BodyParser(&data); err != nil {
 		fmt.Println("Unable to parse body")
 	}
-	//check if password less than 6 characters
-	if len(data["password"].(string)) <= 6 {
-		c.Status(400)
-		return c.JSON(fiber.Map{
+	password, ok := data["password"].(string)
+	if !ok {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Invalid password format",
+		})
+	}
+
+	if len(password) <= 6 {
+		return c.Status(400).JSON(fiber.Map{
 			"message": "Password must be greater than 6 characters",
 		})
-
 	}
+
+	//check if password less than 6 characters
+	// if len(data["password"].(string)) <= 6 {
+	// 	c.Status(400)
+	// 	return c.JSON(fiber.Map{
+	// 		"message": "Password must be greater than 6 characters",
+	// 	})
+
+	// }
 
 	if !validateEmail(strings.TrimSpace(data["email"].(string))) {
 		c.Status(400)
@@ -54,11 +67,8 @@ func Register(c *fiber.Ctx) error {
 		LastName:  data["last_name"].(string),
 		Phone:     data["phone"].(string),
 		// Username:  data["username"].(string),
-		// <<<<<<< HEAD
-		// Email:strings.TrimSpace(data["email"].(string)),
-		// =======
+
 		Email: strings.TrimSpace(data["email"].(string)),
-		// >>>>>>> f45aa6b (migrated to postgres + auth fixes)
 	}
 	user.SetPassword(data["password"].(string))
 	err := database.DB.Create(&user)
@@ -97,13 +107,22 @@ func Login(c *fiber.Ctx) error {
 		c.Status(fiber.StatusInternalServerError)
 		return nil
 	}
+	// cookie := fiber.Cookie{
+	// 	Name:     "jwt",
+	// 	Value:    token,
+	// 	Expires:  time.Now().Add(24 * time.Hour),
+	// 	HTTPOnly: true,
+	// 	Secure:   false,  // ❌ keep false in localhost, ✅ true in production (HTTPS)
+	// 	SameSite: "None", // 🔑 required for cross-site cookies
+	// }
+
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    token,
 		Expires:  time.Now().Add(24 * time.Hour),
 		HTTPOnly: true,
-		Secure:   false,  // ❌ keep false in localhost, ✅ true in production (HTTPS)
-		SameSite: "None", // 🔑 required for cross-site cookies
+		Secure:   true,   // ✅ MUST for HTTPS (Render)
+		SameSite: "None", // ✅ cross-origin
 	}
 
 	c.Cookie(&cookie)
@@ -118,13 +137,21 @@ type Claims struct {
 }
 
 func Logout(c *fiber.Ctx) error {
+	// c.Cookie(&fiber.Cookie{
+	// 	Name:     "jwt",
+	// 	Value:    "",
+	// 	Expires:  time.Now().Add(-time.Hour), // expire immediately
+	// 	HTTPOnly: true,
+	// 	Secure:   false,  // ❌ false for localhost, ✅ true in production (HTTPS)
+	// 	SameSite: "None", // must match login cookie
+	// })
 	c.Cookie(&fiber.Cookie{
 		Name:     "jwt",
 		Value:    "",
-		Expires:  time.Now().Add(-time.Hour), // expire immediately
+		Expires:  time.Now().Add(-time.Hour),
 		HTTPOnly: true,
-		Secure:   false,  // ❌ false for localhost, ✅ true in production (HTTPS)
-		SameSite: "None", // must match login cookie
+		Secure:   true, // ✅ same as login
+		SameSite: "None",
 	})
 
 	return c.JSON(fiber.Map{
