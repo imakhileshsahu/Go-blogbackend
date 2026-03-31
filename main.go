@@ -16,12 +16,19 @@ func main() {
 	// 	AllowCredentials: true,
 	// }))
 
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins:     "https://blog-website-akhi.netlify.app",
+	// 	AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+	// 	AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+	// 	AllowCredentials: true,
+	// }))
+
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "https://blog-website-akhi.netlify.app",
-		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
-		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
-		AllowCredentials: true,
-	}))
+    AllowOrigins:     "https://blog-website-akhi.netlify.app",
+    AllowCredentials: true,
+    AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+    AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+}))
 	// connect database
 	database.Connect()
 
