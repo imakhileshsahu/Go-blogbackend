@@ -21,7 +21,7 @@ func CreatePost(c *fiber.Ctx) error {
 	if err := database.DB.Create(&blogpost).Error; err != nil {
 		c.Status(400)
 		return c.JSON(fiber.Map{
-			"messaage": "Invalid payload",
+			"message": "Invalid payload",
 		})
 	}
 	return c.JSON(fiber.Map{
@@ -51,7 +51,7 @@ func AllPost(c *fiber.Ctx) error {
 func DetailPost(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 	var blogpost models.Blog
-	database.DB.Where("id=?", id).Preload("USer").First(&blogpost)
+	database.DB.Where("id=?", id).Preload("User").First(&blogpost)
 	return c.JSON(fiber.Map{
 		"data": blogpost,
 	})
@@ -60,7 +60,7 @@ func DetailPost(c *fiber.Ctx) error {
 func UpdatePost(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 	blog := models.Blog{
-		Id: uint(id),
+		ID: uint(id),
 	}
 
 	if err := c.BodyParser(&blog); err != nil {
@@ -83,13 +83,13 @@ func UniquePost(c *fiber.Ctx) error {
 func DeletePost(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 	blog := models.Blog{
-		Id: uint(id),
+		ID: uint(id),
 	}
 	deleteQuery := database.DB.Delete(&blog)
 	if errors.Is(deleteQuery.Error, gorm.ErrRecordNotFound) {
 		c.Status(400)
 		return c.JSON(fiber.Map{
-			"message": "opps!,record Not found",
+			"message": "ops!,record Not found",
 		})
 
 	}

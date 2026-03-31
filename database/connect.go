@@ -6,7 +6,7 @@ import (
 
 	"github.com/imakhileshsahu/blogbackend/models"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -19,8 +19,8 @@ func Connect() {
 		log.Fatal("❌Error loading .env file")
 
 	}
-	dsn := os.Getenv("DNS")
-	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dsn := os.Getenv("DATABASE_URL")
+	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		// panic("Could not connecting to database")
 		log.Fatalf(" ❌Could not connect to database: %v", err)
