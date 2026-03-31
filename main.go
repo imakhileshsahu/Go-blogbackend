@@ -10,25 +10,17 @@ import (
 func main() {
 	app := fiber.New()
 
-	// ✅ Enable CORS so frontend (3001) can talk to backend (3000)
-	// app.Use(cors.New(cors.Config{
-	// 	AllowOrigins:     "http://localhost:3001",
-	// 	AllowCredentials: true,
-	// }))
-
-	// app.Use(cors.New(cors.Config{
-	// 	AllowOrigins:     "https://blog-website-akhi.netlify.app",
-	// 	AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
-	// 	AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
-	// 	AllowCredentials: true,
-	// }))
-
+// ✅ 1. CORS middleware
 	app.Use(cors.New(cors.Config{
     AllowOrigins:     "https://blog-website-akhi.netlify.app",
     AllowCredentials: true,
     AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
     AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 }))
+// ✅ 2. Handle preflight requests (IMPORTANT)
+app.Options("/*", func(c *fiber.Ctx) error {
+    return c.SendStatus(204)
+})
 	// connect database
 	database.Connect()
 
