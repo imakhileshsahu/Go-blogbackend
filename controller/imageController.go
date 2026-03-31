@@ -30,6 +30,6 @@ func Upload(c *fiber.Ctx) error {
 		}
 	}
 	return c.JSON(fiber.Map{
-		"url": "http://localhost:3000/api/uploads/" + fileName,
+		"url": "https://go-blog-backend-12bo.onrender.com/api/uploads/" + fileName,
 	})
 }
