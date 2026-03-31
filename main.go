@@ -17,7 +17,7 @@ func main() {
 	// }))
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3001, https://blog-website-akhi.netlify.app",
+		AllowOrigins:     "https://blog-website-akhi.netlify.app",
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowCredentials: true,
