@@ -10,17 +10,19 @@ import (
 func main() {
 	app := fiber.New()
 
-// ✅ 1. CORS middleware
+	// ✅ 1. CORS middleware
 	app.Use(cors.New(cors.Config{
-    AllowOrigins:     "https://blog-website-akhi.netlify.app",
-    AllowCredentials: true,
-    AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
-    AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
-}))
-// ✅ 2. Handle preflight requests (IMPORTANT)
-app.Options("/*", func(c *fiber.Ctx) error {
-    return c.SendStatus(204)
-})
+		AllowOrigins:     "https://blog-website-akhi.netlify.app",
+		AllowCredentials: true,
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+	}))
+	// ✅ 2. Handle preflight requests (IMPORTANT)
+	app.Options("/*", func(c *fiber.Ctx) error {
+		return c.SendStatus(204)
+	})
+	// ✅ STATIC HERE (PUBLIC - no auth)
+	app.Static("/api/uploads", "./uploads")
 	// connect database
 	database.Connect()
 
